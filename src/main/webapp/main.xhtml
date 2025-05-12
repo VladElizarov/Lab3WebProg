@@ -1,0 +1,118 @@
+<html lang="en"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+   <meta charset="UTF-8"/>
+   <title>LABA</title>
+    <link href="styles/style.css" rel="stylesheet" type="text/css"/>
+
+
+</h:head>
+
+<h:body>
+   <header>
+      <h:link styleClass="link-to-main-page" value="Титульная страница" outcome="index"/>
+   </header>
+   <h:form>
+      <main>
+         <div class="variables">
+            <p>Variables</p>
+            <div id="validationMessage" style="padding: 10px; margin-top: 10px; display: none;">Info Box</div>
+            <div class="form" id="form">
+               <p>Введите X:</p>
+               <label for="xSelection">
+                  <h:inputText id="xSelection" class="xSelection"
+                               value="#{formBean.x}"
+                               required="true"
+                               placeholder="-5...5"/>
+               </label>
+
+               <p>Выберите Y:</p>
+               <h:panelGrid columns="2" styleClass="ySelection">
+                  <h:selectBooleanCheckbox id="yMinus3" value="#{formBean.YMinus3}"/>
+                  <h:outputLabel for="yMinus3" value="-3"/>
+
+                  <h:selectBooleanCheckbox id="yMinus2" value="#{formBean.YMinus2}"/>
+                  <h:outputLabel for="yMinus2" value="-2"/>
+
+                  <h:selectBooleanCheckbox id="yMinus1" value="#{formBean.YMinus1}"/>
+                  <h:outputLabel for="yMinus1" value="-1"/>
+
+                  <h:selectBooleanCheckbox id="yZero" value="#{formBean.YZero}"/>
+                  <h:outputLabel for="yZero" value="0"/>
+
+                  <h:selectBooleanCheckbox id="yOne" value="#{formBean.YOne}"/>
+                  <h:outputLabel for="yOne" value="1"/>
+
+                  <h:selectBooleanCheckbox id="yTwo" value="#{formBean.YTwo}"/>
+                  <h:outputLabel for="yTwo" value="2"/>
+
+                  <h:selectBooleanCheckbox id="yThree" value="#{formBean.YThree}"/>
+                  <h:outputLabel for="yThree" value="3"/>
+               </h:panelGrid>
+
+               <p>Введите R:</p>
+               <label for="rSelection">
+                  <h:selectOneMenu id="rSelection" class="rSelection"
+                                   value="#{formBean.r}" style="font-size: 15px; height: 20px;">
+                     <f:selectItem itemValue="1" itemLabel="1"/>
+                     <f:selectItem itemValue="1.5" itemLabel="1.5"/>
+                     <f:selectItem itemValue="2" itemLabel="2"/>
+                     <f:selectItem itemValue="2.5" itemLabel="2.5"/>
+                     <f:selectItem itemValue="3" itemLabel="3"/>
+                     <f:ajax render="table" execute="@this" oncomplete="redrawPoints()"/>
+                  </h:selectOneMenu>
+               </label>
+
+               <h:commandButton value="Отправить" onclick="return processButtons()"
+                                action="#{formBean.submit()}" class="submitButton">
+                  <f:ajax render="table" execute="@form" oncomplete="redrawPoints()"/>
+               </h:commandButton>
+            </div>
+         </div>
+
+         <div class="greatCanvas">
+            <div class="canvasContainer">
+               <p>Graphic</p>
+               <canvas width="400" height="400" id="canvas"></canvas>
+               <canvas id="pointsCanvas" width="400" height="400"></canvas>
+            </div>
+         </div>
+      </main>
+   </h:form>
+   <h:form id="graph-form" style="display: none">
+      <h:inputText id="graph-x" value="#{formBean.x}" required="true"/>
+      <h:inputText id="graph-y" value="#{formBean.y}" required="true"/>
+      <h:inputText id="graph-r" value="#{formBean.r}" required="true"/>
+      <h:commandButton id="graph-button" value="Send" action="#{formBean.submit}">
+         <f:ajax execute="@form" render="table" />
+      </h:commandButton>
+   </h:form>
+
+   <footer>
+      <div class="tableContainer">
+         <p:dataTable value="#{points.points}" emptyMessage="" var="point" id="table" styleClass="tableCorner">
+            <p:column headerText="X">
+               <h:outputText value="#{point.x}"/>
+            </p:column>
+            <p:column headerText="Y">
+               <h:outputText value="#{point.y}"/>
+            </p:column>
+            <p:column headerText="R">
+               <h:outputText value="#{point.r}"/>
+            </p:column>
+            <p:column headerText="Попал?">
+               <h:outputText value="#{point.status ? 'true' :  'false'}"
+                             style="color: #{point.status ? 'green' : 'red'}"/>
+            </p:column>
+         </p:dataTable>
+      </div>
+      <status class="status">
+      </status>
+   </footer>
+
+   <script src="js/canvas.js"></script>
+   <script src="js/script.js"></script>
+</h:body>
+</html>
